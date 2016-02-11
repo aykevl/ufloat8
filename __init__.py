@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 #  Copyright (c) 2016, Ayke van Laethem
 #  All rights reserved.
 #
