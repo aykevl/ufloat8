@@ -28,33 +28,26 @@
 #include "ufloat8.h"
 
 uint32_t ufloat8_dec(ufloat8 fl) {
-  // get the significant digits (mantissa?)
-  uint32_t n = fl & 0x0f;
-  // get the exponent
-  uint8_t exponent = (fl & 0xf0) >> 4;
-  // apply the exponent, getting the result value
-  uint32_t result = n << exponent;
-  return result;
+	// get the significant digits (mantissa?)
+	uint32_t n = fl & 0x0f;
+	// get the exponent
+	uint8_t exponent = (fl & 0xf0) >> 4;
+	// calculate the result
+	return (n << exponent) + (0xffff >> (16-exponent) << 4);
 }
 
 
-ufloat8 ufloat8_enc(uint32_t in) {
-  // Initial value:
-  //   exponent = 0
-  //   mantissa = capped in
-  ufloat8 fl = in & 0x0f;
-  // The magic value 16 was determined by trial-and-error...
-  for (uint8_t i=1; i<16; i++) {
-    // Chop off precision bits on the right side each iteration.
-    // For exponent=0 this was done in the initialisation above.
-    in >>= 1;
-    // Check whether the left most bit of the resulting mantissa is
-    // set. If so, update the resulting float.
-    if (in & 0x08) {
-      // there are bits found!
-      fl = in & 0x0f;
-      fl |= i << 4;
-    }
-  }
-  return fl;
+ufloat8 ufloat8_enc(uint32_t value) {
+	uint32_t overflow = 0;
+	for (uint8_t exponent=0; exponent<16; exponent++) {
+		if (value < overflow * 2 + 16) {
+			uint8_t fl;
+			fl = (value - overflow) >> exponent; // mantissa
+			fl += exponent << 4; // exponent
+			return fl;
+		}
+
+		overflow = overflow * 2 + 16;
+	}
+	return 0; // unreachable for numbers in the range
 }
