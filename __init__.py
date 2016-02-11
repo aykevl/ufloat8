@@ -24,4 +24,5 @@
 #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from .ufloat8 import ufloat8_dec, ufloat8_enc, ufloat8_inc
+from .ufloat8 import ufloat8_dec as decode
+from .ufloat8 import ufloat8_enc as encode
