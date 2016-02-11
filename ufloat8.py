@@ -54,7 +54,22 @@ def ufloat8_enc(value):
 
     return fl
 
-def test():
+def ufloat8_inc(fl, inc):
+    '''
+    Increment or decrement ufloat8 number.
+    WARNING: may wrap around!
+    '''
+    fl += inc;
+    # handle mantissa overflow gracefully
+    if fl & 0xf0 != 0:
+        if inc > 0 and fl & 0x0f < 0x08:
+            fl += 0x08
+        elif inc < 0 and fl & 0x0f < 0x08:
+            fl -= 0x08
+    return fl
+
+
+def test_base():
     # test all encoded values
     success = True
     for encoded1 in range(256):
@@ -69,6 +84,58 @@ def test():
             success = False
     if success:
         print('All tests passed.')
+
+def test_inc(increment=1):
+    import math
+    n = 0
+    for i in range(0, 136-increment, increment):
+        n_old = n
+        n = ufloat8_inc(n, increment)
+        if i > 0:
+            logIncrease = math.log(ufloat8_dec(n))/math.log(2) - math.log(ufloat8_dec(n_old))/math.log(2)
+        else:
+            logIncrease = 0
+        if n <= n_old:
+            raise ValueError('number did not increase')
+        if n < 0 or n > 255:
+            raise ValueError('number outside range')
+        if i > 8:
+            if logIncrease > 0.17*increment:
+                raise ValueError('logarithmic increase should be below 0.17 for values > 8')
+            elif logIncrease <= 0:
+                raise ValueError('value did not increase')
+        else:
+            if n != n_old + increment:
+                raise ValueError('increase should be exactly the increment for values <= 8')
+        print(ufloat8_dec(n), logIncrease)
+    print('Increment test OK.')
+
+def test_dec(decrement=1):
+    import math
+    n = 255
+    while n > decrement:
+        n_old = n
+        n = ufloat8_inc(n, -decrement)
+        logIncrease = math.log(ufloat8_dec(n))/math.log(2) - math.log(ufloat8_dec(n_old))/math.log(2)
+        if n >= n_old:
+            raise ValueError('number did not decrease')
+        if n < 0 or n > 255:
+            raise ValueError('number outside range')
+        if n > 8:
+            if logIncrease < -0.17*decrement:
+                raise ValueError('logarithmic decrease should be below 0.17 for values > 8')
+            elif logIncrease >= 0:
+                raise ValueError('value did not decrease')
+        else:
+            if n != n_old - decrement:
+                raise ValueError('decrease should be exactly the decrement for values <= 8')
+        print(ufloat8_dec(n), logIncrease)
+    print('Decrement test OK.')
+
+def test_all():
+    test_base()
+    test_inc()
+    test_dec()
 
 if __name__ == '__main__':
     test()
