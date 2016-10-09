@@ -33,8 +33,7 @@
  * but with whole (unsigned) integers.
  */
 
-#ifndef UFLOAT8_H
-#define UFLOAT8_H
+#pragma once
 
 #include <stdint.h>
 
@@ -42,5 +41,3 @@ typedef uint8_t ufloat8;
 
 uint32_t ufloat8_dec(ufloat8);
 ufloat8 ufloat8_enc(uint32_t);
-
-#endif
