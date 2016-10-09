@@ -13,7 +13,7 @@ Features:
    stored literally, 16-48 with gaps of one, 48-112 with gaps of three, 112-240
    with gaps of seven, etc. This makes the numbers roughly exponential.
  * There are no two encoded values that decode to the same number.
- * Encoded values are linear, meaning, two decoded values `A` and `B` where
+ * Encoded values are monotonic, meaning, two decoded values `A` and `B` where
    `A > B` will encode to `a >= b`. Two encoded values `a` and `b` with `a > b`
    will decode to `A > B`. This property makes it easy to simply
    increment/decrement the encoded value resulting in a roughly exponential
