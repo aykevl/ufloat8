@@ -39,5 +39,7 @@
 
 typedef uint8_t ufloat8;
 
+// Decode a ufloat8 value to a normal integer
 uint32_t ufloat8_dec(ufloat8);
+// Encode a normal integer as ufloat8 (losing precision)
 ufloat8 ufloat8_enc(uint32_t);
