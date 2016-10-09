@@ -20,7 +20,13 @@ Features:
    increase/decrease.
  * All numbers are unsigned.
  * There are no extras like NaN or Infinity.
- * There is an extra Python implementation.
+
+Implementations:
+
+ * Python reference/testing implementation.
+ * Small C implementation.
+ * Rust implementation, at
+   [rust-ufloat8](https://github.com/aykevl/rust-ufloat8).
 
 This library is freely licensed under the BSD 2-clause license (see
 LICENSE.txt).
